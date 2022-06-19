@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use serenity::{prelude::TypeMapKey, client::bridge::gateway::ShardManager};
+use serenity::{client::bridge::gateway::ShardManager, prelude::TypeMapKey};
 use tokio::sync::Mutex;
 
 pub struct ShardManagerContainer;

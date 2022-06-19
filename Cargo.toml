@@ -9,8 +9,11 @@ tracing = "0.1"
 dotenv = "0.15"
 tracing-subscriber = "0.3"
 serde_yaml = "0.8"
-human-duration = "0.1"
+serde_json = "1.0"
 futures = "0.3"
+duration-string = "0.1"
+chrono = "0.4"
+rand = "0.8"
 
 [dependencies.serenity]
 version = "0.11"

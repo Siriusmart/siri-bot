@@ -1,4 +1,5 @@
+pub mod appdata;
 pub mod commands;
 pub mod handlers;
-pub mod config;
-pub mod appdata;
+pub mod init;
+pub mod structs;

@@ -4,6 +4,7 @@ use serenity::prelude::TypeMapKey;
 
 pub struct Session {
     pub start: Instant,
+    pub bot_id: u64,
 }
 
 impl TypeMapKey for Session {
@@ -11,9 +12,10 @@ impl TypeMapKey for Session {
 }
 
 impl Session {
-    pub fn new() -> Self {
+    pub fn new(bot_id: u64) -> Self {
         Self {
             start: Instant::now(),
+            bot_id,
         }
     }
 }

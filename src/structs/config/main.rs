@@ -1,26 +1,38 @@
+use std::path::Path;
+
 use serde::{Deserialize, Serialize};
 use tracing::warn;
 
-#[derive(Serialize, Deserialize)]
+// defaults
+fn prefix_default() -> String {
+    String::from(">")
+}
+
+fn shard_count_default() -> u64 {
+    1
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MainConfig {
+    #[serde(default = "prefix_default")]
     pub prefix: String,
-    pub shard_count: u16,
+
+    #[serde(default = "shard_count_default")]
+    pub shard_count: u64,
 }
 
 impl Default for MainConfig {
     fn default() -> Self {
         Self {
-            prefix: String::from(">"),
-            shard_count: 1,
+            prefix: prefix_default(),
+            shard_count: shard_count_default(),
         }
     }
 }
 
 impl MainConfig {
     pub fn load() -> Self {
-        let config_path = std::env::current_dir()
-            .unwrap()
-            .join("./storage/config/main.yml");
+        let config_path = Path::new("./storage/config/main.yml");
 
         let config: MainConfig = if config_path.exists() {
             let config_file = std::fs::read_to_string(&config_path).unwrap();

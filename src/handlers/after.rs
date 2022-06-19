@@ -3,7 +3,7 @@ use serenity::{
     framework::standard::{macros::hook, CommandResult},
     model::channel::Message,
 };
-use tracing::{info, error};
+use tracing::{error, info};
 
 #[hook]
 pub async fn after(_: &Context, msg: &Message, command_name: &str, command_result: CommandResult) {

@@ -1,6 +1,9 @@
 use siri_bot::{
-    commands::general::GENERAL_GROUP,
-    handlers::{after, before, MY_HELP}, config::Config, appdata::Session,
+    appdata::Session,
+    commands::{community::COMMUNITY_GROUP, general::GENERAL_GROUP},
+    handlers::{after, before, MY_HELP},
+    init,
+    structs::{config::Config, global::giveaways::giveaways::GiveawayIndex},
 };
 
 use serenity::{framework::StandardFramework, http::Http, prelude::GatewayIntents, Client};
@@ -10,6 +13,9 @@ use tracing::error;
 
 #[tokio::main]
 async fn main() {
+    // fs init
+    init::init().expect("Could not initialize storage");
+
     let config = Config::load();
 
     // load env vars from .env file
@@ -45,6 +51,7 @@ async fn main() {
                 .on_mention(Some(bot_id))
         })
         .group(&GENERAL_GROUP)
+        .group(&COMMUNITY_GROUP)
         .help(&MY_HELP)
         .before(before)
         .after(after);
@@ -56,8 +63,9 @@ async fn main() {
     let mut client = Client::builder(&token, intents)
         .framework(framework)
         .event_handler(Handler)
-        .type_map_insert::<Config>(config)
-        .type_map_insert::<Session>(Session::new())
+        .type_map_insert::<Config>(config.clone())
+        .type_map_insert::<Session>(Session::new(*bot_id.as_u64()))
+        .type_map_insert::<GiveawayIndex>(GiveawayIndex::load())
         .await
         .expect("Err creating client");
 
@@ -75,7 +83,7 @@ async fn main() {
         shard_manager.lock().await.shutdown_all().await;
     });
 
-    if let Err(e) = client.start().await {
+    if let Err(e) = client.start_shards(config.main.shard_count).await {
         error!("Client error: {:?}", e);
     }
 }

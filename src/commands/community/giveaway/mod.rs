@@ -1,3 +1,7 @@
+mod create;
+
+use crate::structs::config::Config;
+use create::CREATE_COMMAND;
 use serenity::{
     client::Context,
     framework::standard::{macros::command, CommandResult},
@@ -5,32 +9,28 @@ use serenity::{
     utils::Color,
 };
 
-use crate::{
-    appdata::Session,
-    structs::{config::Config, functions::duration_string},
-};
-
 #[command]
-#[description = "Get the bot's session uptime"]
+#[aliases(gway, giveaways)]
+#[sub_commands(create)]
+#[description = "Pick a winner from the list of people who have entered the giveaway after a given time"]
 #[usage = ""]
-async fn uptime(ctx: &Context, msg: &Message) -> CommandResult {
+async fn giveaway(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
-    let session = data.get::<Session>().unwrap();
     let config = data.get::<Config>().unwrap();
 
-    let content = format!("Uptime: `{}`", duration_string(&session.start.elapsed()));
-
+    let content = String::from("This is the giveaway command");
     let mut sent_msg = msg.reply_ping(&ctx.http, &content).await?;
 
     sent_msg
         .edit(&ctx.http, |m| {
             m.content(String::new()).embed(|e| {
-                e.title("Bot Uptime").description(&content).color({
-                    let c: Color = config.styles.general.into();
+                e.title("Giveaways").description(&content).color({
+                    let c: Color = config.styles.giveaway.into();
                     c
                 })
             })
         })
         .await?;
+
     Ok(())
 }
